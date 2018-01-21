@@ -7,6 +7,9 @@ package com.sg.creativity.suite.dto;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,8 +19,8 @@ import java.util.List;
 public class Session {
     private int id;
     private LocalDate date;
-    private Time start_time;
-    private Time end_time;
+    private LocalTime start_time;
+    private LocalTime end_time;
     private List<String> hat_sequence;
 
     public int getId() {
@@ -36,27 +39,30 @@ public class Session {
         this.date = date;
     }
 
-    public Time getStart_time() {
+    public LocalTime getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(Time start_time) {
+    public void setStart_time(LocalTime start_time) {
         this.start_time = start_time;
     }
 
-    public Time getEnd_time() {
+    public LocalTime getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(Time end_time) {
+    public void setEnd_time(LocalTime end_time) {
         this.end_time = end_time;
     }
 
     public List<String> getHat_sequence() {
         return hat_sequence;
     }
-
-    public void setHat_sequence(List<String> hat_sequence) {
+    
+    //this will come in as a String from JDBC
+    public void setHat_sequence(String sequence_string) {
+        List<String> hat_sequence = new ArrayList<String>();
+        hat_sequence = Arrays.asList(sequence_string.split("\\s*,\\s*"));
         this.hat_sequence = hat_sequence;
     }
     

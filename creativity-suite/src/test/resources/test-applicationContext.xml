@@ -35,4 +35,31 @@
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    
+    <bean id="ideaDaoImpl"
+          class="com.sg.creativity.suite.dao.IdeaDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>    
+    </bean>
+    <bean id="conceptDaoImpl"
+          class="com.sg.creativity.suite.dao.ConceptDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>    
+    </bean>
+    <bean id="valueDaoImpl"
+          class="com.sg.creativity.suite.dao.ValueDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>    
+    </bean>
+    <bean id="problemDaoImpl"
+          class="com.sg.creativity.suite.dao.ProblemDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>    
+    </bean>
+    <bean id="sessionDaoImpl"
+          class="com.sg.creativity.suite.dao.SessionDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>    
+    </bean>
+    
+    
+    
+    
+    <!-- leave at bottom -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
 </beans>
