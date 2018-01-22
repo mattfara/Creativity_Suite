@@ -6,6 +6,7 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Problem;
+import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -33,6 +34,9 @@ public class ProblemDaoTest {
     
     @Inject
     ProblemDao dao;
+    
+    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    
     public ProblemDaoTest() {
     }
     
@@ -51,26 +55,6 @@ public class ProblemDaoTest {
     @After
     public void tearDown() {
     }
-
-    
-    public Problem makeProblemAndSetFields(String name, String description){
-        Problem problem = new Problem();
-        problem.setName(name);
-        problem.setDescription(description);
-        
-        return problem;
-    }
-    
-    public Problem makeProblemAndSetFields(){
-        Problem problem = new Problem();
-        problem.setName("too many lawyers in my town");
-        problem.setDescription("the census in my town revealed that the excess of"
-                + "lawyers in my town is leading to unemployment");
-        
-        return problem;
-    }
-    
-    
     
     /**
      * Test of insertProblem method, of class ProblemDao.
@@ -78,7 +62,7 @@ public class ProblemDaoTest {
     @Test
     @Transactional
     public void testInsertProblem() {
-        Problem problem = makeProblemAndSetFields();
+        Problem problem = objMaker.makeProblemAndSetFields();
         //add
         dao.insertProblem(problem);
         //get
@@ -94,7 +78,7 @@ public class ProblemDaoTest {
     @Test
     @Transactional
     public void testGetProblemById() {
-           Problem problem = makeProblemAndSetFields();
+           Problem problem = objMaker.makeProblemAndSetFields();
         //add
         dao.insertProblem(problem);
         //get
@@ -111,8 +95,8 @@ public class ProblemDaoTest {
     @Test
     @Transactional
     public void testGetAllProblems() {
-        Problem problem1 = makeProblemAndSetFields();
-        Problem problem2 = makeProblemAndSetFields("abc", null);
+        Problem problem1 = objMaker.makeProblemAndSetFields();
+        Problem problem2 = objMaker.makeProblemAndSetFields("abc", null);
         
         dao.insertProblem(problem1);
         dao.insertProblem(problem2);
@@ -139,7 +123,7 @@ public class ProblemDaoTest {
     @Test
     @Transactional
     public void testRemoveProblem() {
-        Problem problem = makeProblemAndSetFields();
+        Problem problem = objMaker.makeProblemAndSetFields();
         //add
         dao.insertProblem(problem);
         //get
@@ -157,7 +141,7 @@ public class ProblemDaoTest {
     @Test
     @Transactional
     public void testUpdateProblem() {
-        Problem problem = makeProblemAndSetFields();
+        Problem problem = objMaker.makeProblemAndSetFields();
         dao.insertProblem(problem);
         Problem problemFromDao = dao.getProblemById(problem.getId());
         String newName = "abc";

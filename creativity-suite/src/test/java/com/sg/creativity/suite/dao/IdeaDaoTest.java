@@ -6,6 +6,7 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Idea;
+import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -36,6 +37,8 @@ public class IdeaDaoTest {
     @Inject
     private IdeaDao dao;
     
+    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    
     public IdeaDaoTest() {
     }
     
@@ -55,22 +58,7 @@ public class IdeaDaoTest {
     public void tearDown() {
     }
     
-    public Idea makeIdeaAndSetFields(String name, String description){
-        Idea idea = new Idea();
-        idea.setName(name);
-        idea.setDescription(description);
-        
-        return idea;
-    }
     
-    public Idea makeIdeaAndSetFields(){
-        Idea idea = new Idea();
-        idea.setName("a bucket with a hole in the bottom");
-        idea.setDescription("this bucket has a dime-sized hole at its lowest "
-                + "point when stood with mouth up");
-        
-        return idea;
-    }
     /**
      * Test of insertIdea method, of class IdeaDao.
      */
@@ -78,7 +66,7 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testInsertIdea() {
-        Idea idea = makeIdeaAndSetFields();
+        Idea idea = objMaker.makeIdeaAndSetFields();
         //add
         dao.insertIdea(idea);
         //get
@@ -94,7 +82,7 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testGetIdeaById() {
-        Idea idea = makeIdeaAndSetFields();
+        Idea idea = objMaker.makeIdeaAndSetFields();
         //add
         dao.insertIdea(idea);
         //get
@@ -111,8 +99,8 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testGetAllIdeas() {
-        Idea idea1 = makeIdeaAndSetFields();
-        Idea idea2 = makeIdeaAndSetFields("abc", null);
+        Idea idea1 = objMaker.makeIdeaAndSetFields();
+        Idea idea2 = objMaker.makeIdeaAndSetFields("abc", null);
         
         dao.insertIdea(idea1);
         dao.insertIdea(idea2);
@@ -139,7 +127,7 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testRemoveIdea() {
-        Idea idea = makeIdeaAndSetFields();
+        Idea idea = objMaker.makeIdeaAndSetFields();
         //add
         dao.insertIdea(idea);
         //get
@@ -157,7 +145,7 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testUpdateIdea() {
-        Idea idea = makeIdeaAndSetFields();
+        Idea idea = objMaker.makeIdeaAndSetFields();
         dao.insertIdea(idea);
         Idea ideaFromDao = dao.getIdeaById(idea.getId());
         String newName = "abc";

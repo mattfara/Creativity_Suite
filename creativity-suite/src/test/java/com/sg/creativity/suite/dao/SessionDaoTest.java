@@ -6,14 +6,13 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Session;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,6 +35,9 @@ public class SessionDaoTest {
     
     @Inject
     private SessionDao dao;
+    
+    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    
     public SessionDaoTest() {
     }
     
@@ -54,82 +56,112 @@ public class SessionDaoTest {
     @After
     public void tearDown() {
     }
-
-    public Session makeSessionAndSetFields(String date, String start_time, String end_time, String hat_sequence){
-        Session session = new Session();
-        session.setDate(LocalDate.parse(date));
-        session.setStart_time(LocalTime.parse(start_time));
-        session.setEnd_time(LocalTime.parse(end_time));
-        session.setHat_sequence(hat_sequence);
-        
-        return session;
-    }
-    
-    public Session makeSessionAndSetFields(){
-        
-        Session session = new Session();
-        session.setDate(LocalDate.parse("1992-05-14"));
-        session.setStart_time(LocalTime.parse("12:15:00"));
-        session.setEnd_time(LocalTime.parse("12:20:00"));
-        session.setHat_sequence("white,red,green,yellow,black,red,white");
-        
-        return session;
-    }
     
     /**
      * Test of insertSession method, of class SessionDao.
      */
     @Test
+    @Transactional
     public void testInsertSession() {
+        Session session = objMaker.makeSessionAndSetFields();
+        dao.insertSession(session);
+        Session fromDao = dao.getSessionById(session.getId());
+        assertEquals("1992-05-14",fromDao.getDate().toString());
+        assertEquals("12:15:00",fromDao.getStart_time().toString());
+        assertEquals("12:20:00",fromDao.getEnd_time().toString());
+        assertEquals("white,red,green,yellow,black,red,white",fromDao.getHat_sequence().toString());
+        
+        
+        
     }
 
     /**
      * Test of getSessionById method, of class SessionDao.
      */
     @Test
+    @Transactional
     public void testGetSessionById() {
+        Session session = objMaker.makeSessionAndSetFields();
+        dao.insertSession(session);
+        Session fromDao = dao.getSessionById(session.getId());
+        assertEquals("1992-05-14",fromDao.getDate().toString());
+        assertEquals("12:15:00",fromDao.getStart_time().toString());
+        assertEquals("12:20:00",fromDao.getEnd_time().toString());
+        assertEquals("white,red,green,yellow,black,red,white",fromDao.getHat_sequence().toString());
+    
     }
 
     /**
      * Test of getAllSessions method, of class SessionDao.
      */
     @Test
+    @Transactional
     public void testGetAllSessions() {
+        Session s1 = objMaker.makeSessionAndSetFields();
+        Session s2 = objMaker.makeSessionAndSetFields("2005-05-05", "12:16:00", "12:21:00", "red,green,yellow,black,red");
+        
+        dao.insertSession(s1);
+        dao.insertSession(s2);
+        
+        List<Session> allSessions = dao.getAllSessions();
+        int sessionCount = allSessions.size();
+        
+        assertEquals(7, sessionCount);
+        Session s1FromDao = dao.getSessionById(s1.getId());
+        Session s2FromDao = dao.getSessionById(s2.getId());
+        
+        assertEquals("1992-05-14",s1FromDao.getDate().toString());
+        assertEquals("12:15:00",s1FromDao.getStart_time().toString());
+        assertEquals("12:20:00",s1FromDao.getEnd_time().toString());
+        assertEquals("white,red,green,yellow,black,red,white",s1FromDao.getHat_sequence().toString());
+        
+        assertEquals("2005-05-05",s2FromDao.getDate().toString());
+        assertEquals("12:16:00",s2FromDao.getStart_time().toString());
+        assertEquals("12:21:00",s2FromDao.getEnd_time().toString());
+        assertEquals("red,green,yellow,black,red",s2FromDao.getHat_sequence().toString());
     }
 
     /**
      * Test of removeSession method, of class SessionDao.
      */
     @Test
+    @Transactional
     public void testRemoveSession() {
+        Session session = objMaker.makeSessionAndSetFields();
+        dao.insertSession(session);
+        Session fromDao = dao.getSessionById(session.getId());
+        dao.removeSession(fromDao);
+        assertNull(dao.getSessionById(fromDao.getId()));
+    
     }
 
     /**
      * Test of updateSession method, of class SessionDao.
      */
     @Test
+    @Transactional
     public void testUpdateSession() {
+        Session session = objMaker.makeSessionAndSetFields();
+        dao.insertSession(session);
+        Session fromDao = dao.getSessionById(session.getId());
+        Session s2 = objMaker.makeSessionAndSetFields("2005-05-05", "12:16:00", "12:21:00", "red,green,yellow,black,red");
+        
+        fromDao.setDate(s2.getDate());
+        fromDao.setEnd_time(s2.getEnd_time());
+        fromDao.setHat_sequence(s2.getHat_sequence().toString());
+        fromDao.setStart_time(s2.getStart_time());
+        
+        dao.updateSession(fromDao);
+        
+        Session updatedSessionFromDao = dao.getSessionById(fromDao.getId());
+        
+        assertEquals("2005-05-05",fromDao.getDate().toString());
+        assertEquals("12:16:00",fromDao.getStart_time().toString());
+        assertEquals("12:21:00",fromDao.getEnd_time().toString());
+        assertEquals("red,green,yellow,black,red",fromDao.getHat_sequence().toString());
+        
     }
 
-    public class SessionDaoImpl implements SessionDao {
-
-        public Session insertSession(Session concept) {
-            return null;
-        }
-
-        public Session getSessionById(int id) {
-            return null;
-        }
-
-        public List<Session> getAllSessions() {
-            return null;
-        }
-
-        public void removeSession(Session concept) {
-        }
-
-        public void updateSession(Session concept) {
-        }
-    }
+    
     
 }

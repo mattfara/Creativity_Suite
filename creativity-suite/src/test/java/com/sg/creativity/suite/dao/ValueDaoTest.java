@@ -6,6 +6,7 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Value;
+import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -33,7 +34,8 @@ public class ValueDaoTest {
     
     @Inject
     private ValueDao dao;
-    
+
+    CreativeObjectMaker objMaker = new CreativeObjectMaker();
     
     public ValueDaoTest() {
     }
@@ -57,22 +59,6 @@ public class ValueDaoTest {
     /**
      * Test of insertValue method, of class ValueDao.
      */
-    public Value makeValueAndSetFields(String name, String description){
-        Value value = new Value();
-        value.setName(name);
-        value.setDescription(description);
-        
-        return value;
-    }
-    
-    public Value makeValueAndSetFields(){
-        Value value = new Value();
-        value.setName("a bucket with a hole in the bottom");
-        value.setDescription("this bucket has a dime-sized hole at its lowest "
-                + "point when stood with mouth up");
-        
-        return value;
-    }
     /**
      * Test of insertValue method, of class ValueDao.
      */
@@ -80,7 +66,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testInsertValue() {
-        Value value = makeValueAndSetFields();
+        Value value = objMaker.makeValueAndSetFields();
         //add
         dao.insertValue(value);
         //get
@@ -96,7 +82,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testGetValueById() {
-        Value value = makeValueAndSetFields();
+        Value value = objMaker.makeValueAndSetFields();
         //add
         dao.insertValue(value);
         //get
@@ -113,8 +99,8 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testGetAllValues() {
-        Value value1 = makeValueAndSetFields();
-        Value value2 = makeValueAndSetFields("abc", null);
+        Value value1 = objMaker.makeValueAndSetFields();
+        Value value2 = objMaker.makeValueAndSetFields("abc", null);
         
         dao.insertValue(value1);
         dao.insertValue(value2);
@@ -141,7 +127,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testRemoveValue() {
-        Value value = makeValueAndSetFields();
+        Value value = objMaker.makeValueAndSetFields();
         //add
         dao.insertValue(value);
         //get
@@ -159,7 +145,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testUpdateValue() {
-        Value value = makeValueAndSetFields();
+        Value value = objMaker.makeValueAndSetFields();
         dao.insertValue(value);
         Value valueFromDao = dao.getValueById(value.getId());
         String newName = "abc";

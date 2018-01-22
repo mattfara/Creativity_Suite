@@ -75,12 +75,11 @@ public class Idea_ConceptDaoImpl implements Idea_ConceptDao {
             Idea_Concept idea_concept = new Idea_Concept();
             idea_concept.setId(rs.getInt("id"));
 
-            // Lazy load superperson
+            
             Idea idea = new Idea();
             idea.setId(rs.getInt("idea_id"));
             idea_concept.setIdea(idea);
-
-            // Lazy load concept
+            
             Concept concept = new Concept();
             concept.setId(rs.getInt("concept_id"));
             idea_concept.setConcept(concept);
