@@ -57,7 +57,10 @@
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
     
-    
+    <bean id="idea_ConceptDaoImpl"
+          class="com.sg.creativity.suite.dao.Idea_ConceptDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
     
     
     <!-- leave at bottom -->
