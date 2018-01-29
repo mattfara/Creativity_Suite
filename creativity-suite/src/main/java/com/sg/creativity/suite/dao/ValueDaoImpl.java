@@ -25,7 +25,7 @@ public class ValueDaoImpl implements ValueDao {
             = "SELECT * FROM Values WHERE id = ?";
 
     private final String SQL_GET_ALL_VALUES
-            = "SELECT * FROM Values";
+            = "SELECT * FROM Values ORDER BY id LIMIT ?, ?";
 
     private final String SQL_REMOVE_VALUE
             = "DELETE FROM Values WHERE id = ?";

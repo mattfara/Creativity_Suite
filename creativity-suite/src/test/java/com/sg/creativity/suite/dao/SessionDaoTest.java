@@ -6,7 +6,6 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Session;
-import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -36,7 +35,7 @@ public class SessionDaoTest {
     @Inject
     private SessionDao dao;
     
-    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    DaoTestHelper helper = new DaoTestHelper();
     
     public SessionDaoTest() {
     }
@@ -63,7 +62,7 @@ public class SessionDaoTest {
     @Test
     @Transactional
     public void testInsertSession() {
-        Session session = objMaker.makeSessionAndSetFields();
+        Session session = helper.makeSessionAndSetFields();
         dao.insertSession(session);
         Session fromDao = dao.getSessionById(session.getId());
         assertEquals("1992-05-14",fromDao.getDate().toString());
@@ -81,7 +80,7 @@ public class SessionDaoTest {
     @Test
     @Transactional
     public void testGetSessionById() {
-        Session session = objMaker.makeSessionAndSetFields();
+        Session session = helper.makeSessionAndSetFields();
         dao.insertSession(session);
         Session fromDao = dao.getSessionById(session.getId());
         assertEquals("1992-05-14",fromDao.getDate().toString());
@@ -97,8 +96,8 @@ public class SessionDaoTest {
     @Test
     @Transactional
     public void testGetAllSessions() {
-        Session s1 = objMaker.makeSessionAndSetFields();
-        Session s2 = objMaker.makeSessionAndSetFields("2005-05-05", "12:16:00", "12:21:00", "red,green,yellow,black,red");
+        Session s1 = helper.makeSessionAndSetFields();
+        Session s2 = helper.makeSessionAndSetFields("2005-05-05", "12:16:00", "12:21:00", "red,green,yellow,black,red");
         
         dao.insertSession(s1);
         dao.insertSession(s2);
@@ -127,7 +126,7 @@ public class SessionDaoTest {
     @Test
     @Transactional
     public void testRemoveSession() {
-        Session session = objMaker.makeSessionAndSetFields();
+        Session session = helper.makeSessionAndSetFields();
         dao.insertSession(session);
         Session fromDao = dao.getSessionById(session.getId());
         dao.removeSession(fromDao);
@@ -141,10 +140,10 @@ public class SessionDaoTest {
     @Test
     @Transactional
     public void testUpdateSession() {
-        Session session = objMaker.makeSessionAndSetFields();
+        Session session = helper.makeSessionAndSetFields();
         dao.insertSession(session);
         Session fromDao = dao.getSessionById(session.getId());
-        Session s2 = objMaker.makeSessionAndSetFields("2005-05-05", "12:16:00", "12:21:00", "red,green,yellow,black,red");
+        Session s2 = helper.makeSessionAndSetFields("2005-05-05", "12:16:00", "12:21:00", "red,green,yellow,black,red");
         
         fromDao.setDate(s2.getDate());
         fromDao.setEnd_time(s2.getEnd_time());

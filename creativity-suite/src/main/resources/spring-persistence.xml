@@ -34,32 +34,45 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
     
-    <bean id="ideaDaoImpl"
+    <bean id="ideaDao"
           class="com.sg.creativity.suite.dao.IdeaDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
     
-    <bean id="conceptDaoImpl"
+    <bean id="conceptDao"
           class="com.sg.creativity.suite.dao.ConceptDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
-    <bean id="valueDaoImpl"
-          class="com.sg.creativity.suite.dao.valueDaoImpl">
+    <bean id="valueDao"
+          class="com.sg.creativity.suite.dao.ValueDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
-    <bean id="problemDaoImpl"
+    <bean id="problemDao"
           class="com.sg.creativity.suite.dao.ProblemDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
-    <bean id="idea_ConceptDaoImpl"
+    <bean id="idea_ConceptDao"
           class="com.sg.creativity.suite.dao.Idea_ConceptDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
+    <bean id="idea_ProblemDao"
+          class="com.sg.creativity.suite.dao.Idea_ProblemDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
     
+    <bean id="idea_ValueDao"
+          class="com.sg.creativity.suite.dao.Idea_ValueDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+    
+    <bean id="session_ProblemDao"
+          class="com.sg.creativity.suite.dao.Session_ProblemDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
     
     <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
 </beans>

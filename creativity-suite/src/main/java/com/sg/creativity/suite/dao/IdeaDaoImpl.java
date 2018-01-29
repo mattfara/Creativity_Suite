@@ -9,8 +9,11 @@ import com.sg.creativity.suite.dto.Idea;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -25,7 +28,7 @@ public class IdeaDaoImpl implements IdeaDao{
             = "SELECT * FROM Ideas WHERE id = ?";
 
     private final String SQL_GET_ALL_IDEAS
-            = "SELECT * FROM Ideas";
+            = "SELECT * FROM Ideas ORDER BY id LIMIT ?, ?";
 
     private final String SQL_REMOVE_IDEA
             = "DELETE FROM Ideas WHERE id = ?";
@@ -35,13 +38,21 @@ public class IdeaDaoImpl implements IdeaDao{
 
     
     @Override
-    public Idea insertIdea(Idea concept) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Idea insertIdea(Idea idea) {
+        jdbcTemplate.update(SQL_INSERT_IDEA, 
+                idea.getName(),
+                idea.getDescription());
+        int id = jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class);
+        idea.setId(id);
+        return idea;
     }
 
     @Override
-    public Idea getIdeaById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Idea getIdeaById(int id) throws EmptyResultDataAccessException {
+        Idea idea = jdbcTemplate.queryForObject(SQL_GET_IDEA_BY_ID, 
+                new IdeaMapper(), id);
+        return idea;
     }
 
     @Override
@@ -75,7 +86,8 @@ public class IdeaDaoImpl implements IdeaDao{
 
             idea.setId(rs.getInt("id"));
             idea.setName(rs.getString("name"));
-            idea.setDescription(rs.getString("description"));
+            String description = rs.getString("description");
+            idea.setDescription(rs.wasNull() ? "" : description);
             
 	    return idea;
 	}

@@ -20,11 +20,11 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class Idea_ConceptDaoImpl implements Idea_ConceptDao {
 
-    private static String SQL_GET_IDEA_CONCEPT_BY_IDEA_AND_CONCEPT = "SELECT * FROM Idea_Concept WHERE IdeaId = ? AND ConceptId = ?";
-    private static String SQL_INSERT_IDEA_CONCEPT = "INSERT INTO Idea_Concept (IdeaId, ConceptId) VALUES (?, ?)";
-    private static String SQL_GET_IDEA_CONCEPT = "SELECT * FROM Idea_Concept WHERE Idea_ConceptId = ?";
-    private static String SQL_DELETE_IDEA_CONCEPT = "DELETE FROM Idea_Concept WHERE Idea_ConceptId = ?";
-    private static String SQL_LIST_IDEA_CONCEPTS = "SELECT * FROM Idea_Concept LIMIT ?, ?";
+    private static String SQL_GET_IDEA_CONCEPT_BY_IDEA_AND_CONCEPT = "SELECT * FROM Idea_Concept WHERE ideaId = ? AND conceptId = ?";
+    private static String SQL_INSERT_IDEA_CONCEPT = "INSERT INTO Idea_Concept (ideaId, conceptId) VALUES (?, ?)";
+    private static String SQL_GET_IDEA_CONCEPT_BY_ID = "SELECT * FROM Idea_Concept WHERE id = ?";
+    private static String SQL_DELETE_IDEA_CONCEPT = "DELETE FROM Idea_Concept WHERE id = ?";
+    private static String SQL_GET_ALL_IDEA_CONCEPTS = "SELECT * FROM Idea_Concept ORDER BY id LIMIT ?, ?";
 
     
     @Override

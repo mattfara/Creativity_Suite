@@ -6,18 +6,20 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Idea;
-import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class IdeaDaoTest {
     
-    @Inject
-    private ApplicationContext ctx;
-    
-    @Inject
-    private IdeaDao dao;
-    
-    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    @Inject private ApplicationContext ctx;
+    @Inject private IdeaDao ideaDao;
+    @Inject private DaoTestHelper helper;
     
     public IdeaDaoTest() {
     }
@@ -66,58 +64,85 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testInsertIdea() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        //add
-        dao.insertIdea(idea);
-        //get
-        Idea fromDao = dao.getIdeaById(idea.getId());
-        assertEquals("a bucket with a hole in the bottom", fromDao.getName());
-        assertEquals("this bucket has a dime-sized hole at its lowest "
-                + "point when stood with mouth up", fromDao.getDescription());
+        helper.insertAnIdea();
+        return;
     }
 
+    @Test
+    public void testInsertIdeaWithNullDescription() {
+        helper.insertAnIdeaWithNullDescription();
+    }
+    
+    @Test(expected=DataIntegrityViolationException.class) //data integrity violation //should be MissingARequiredFieldException
+    public void testInsertIdeaWithNullName() {
+        helper.insertAnIdeaWithNullName();
+    }
+    
     /**
      * Test of getIdeaById method, of class IdeaDao.
      */
     @Test
     @Transactional
-    public void testGetIdeaById() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        //add
-        dao.insertIdea(idea);
-        //get
-        Idea fromDao = dao.getIdeaById(idea.getId());
-        assertEquals("a bucket with a hole in the bottom", fromDao.getName());
-        assertEquals("this bucket has a dime-sized hole at its lowest "
-                + "point when stood with mouth up", fromDao.getDescription());
-    
+    public void testGetIdeaByIdFillsIdField() {
+        helper.insertAnIdea();
+        Idea idea = ideaDao.getIdeaById(1);
+        
+        assertNotNull(idea.getId());
     }
 
+    @Test
+    @Transactional
+    public void testGetIdeaByIdFillsNameField() {
+        helper.insertAnIdea();
+        Idea idea = ideaDao.getIdeaById(1);
+        
+        assertEquals("ABC", idea.getName());    
+    }
+    
+    @Test
+    @Transactional
+    public void testGetIdeaByIdFillsDescriptionField() {
+        helper.insertAnIdea();
+        Idea idea = ideaDao.getIdeaById(1);
+        
+        assertEquals("XYZ", idea.getDescription());
+    }
+    
+    @Test
+    @Transactional
+    public void testGetIdeaByIdFillsDescriptionFieldEvenIfNullInDb() {
+        Idea idea = helper.insertAnIdeaWithNullDescription();
+        assertEquals("", idea.getDescription());
+    }
+    
+    @Test(expected=EmptyResultDataAccessException.class)
+    public void testGetIdeaByNonExistantId() {
+        ideaDao.getIdeaById(1);
+    }
+    
+    
     /**
      * Test of getAllIdeas method, of class IdeaDao.
      */
+    
+    @Test
+    public void testGetAllIdeasWhenNoIdeasInDB() {
+        int ideaCountBeforeInsertions = ideaDao.getAllIdeas().size();
+        assertNotNull(ideaCountBeforeInsertions);
+        assertEquals(0, ideaCountBeforeInsertions);
+    }
+
+    
     @Test
     @Transactional
     public void testGetAllIdeas() {
-        Idea idea1 = objMaker.makeIdeaAndSetFields();
-        Idea idea2 = objMaker.makeIdeaAndSetFields("abc", null);
+        helper.insertAnIdea();
+        helper.insertAnIdea();
         
-        dao.insertIdea(idea1);
-        dao.insertIdea(idea2);
-        
-        List<Idea> allIdeas = dao.getAllIdeas();
-        int ideaCount = allIdeas.size();
-        
-        assertEquals(7, ideaCount);
-        Idea idea1FromDao = dao.getIdeaById(idea1.getId());
-        Idea idea2FromDao = dao.getIdeaById(idea2.getId());
-        
-        assertEquals("a bucket with a hole in the bottom", idea1FromDao.getName());
-        assertEquals("this bucket has a dime-sized hole at its lowest "
-                + "point when stood with mouth up", idea1FromDao.getDescription());
-        
-        assertEquals("abc", idea2FromDao.getName());
-        assertNull(idea2FromDao.getDescription());
+        List<Idea> allIdeas = ideaDao.getAllIdeas();
+        assertEquals(2, allIdeas.size());
+        assertEquals(1, allIdeas.get(0).getId());
+        assertEquals(2, allIdeas.get(1).getId());
         
     }
 
@@ -127,16 +152,9 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testRemoveIdea() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        //add
-        dao.insertIdea(idea);
-        //get
-        Idea fromDao = dao.getIdeaById(idea.getId());
-        
-        //delete
-        dao.removeIdea(fromDao);
-        assertNull(dao.getIdeaById(fromDao.getId()));
-    
+        Idea idea = helper.insertAnIdea();
+        ideaDao.removeIdea(idea);
+        assertNull(ideaDao.getIdeaById(idea.getId()));
     }
 
     /**
@@ -145,20 +163,9 @@ public class IdeaDaoTest {
     @Test
     @Transactional
     public void testUpdateIdea() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        dao.insertIdea(idea);
-        Idea ideaFromDao = dao.getIdeaById(idea.getId());
-        String newName = "abc";
-        String newDescription = "xyz";
+        Idea idea = helper.makeAndUpdateAnIdea();
         
-        ideaFromDao.setName(newName);
-        ideaFromDao.setDescription(newDescription);
-        
-        dao.updateIdea(ideaFromDao);
-        
-        Idea updatedIdeaFromDao = dao.getIdeaById(idea.getId());
-        
-        assertEquals("abc", updatedIdeaFromDao.getName());
-        assertEquals("xyz", updatedIdeaFromDao.getDescription());
+        assertEquals("abc", idea.getName());
+        assertEquals("xyz", idea.getDescription());
     }
 }

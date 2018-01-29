@@ -25,7 +25,7 @@ public class ProblemDaoImpl implements ProblemDao{
             = "SELECT * FROM Problems WHERE id = ?";
 
     private final String SQL_GET_ALL_PROBLEMS
-            = "SELECT * FROM Problems";
+            = "SELECT * FROM Problems ORDER BY id LIMIT ?, ?";
 
     private final String SQL_REMOVE_PROBLEM
             = "DELETE FROM Problems WHERE id = ?";

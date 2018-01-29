@@ -8,15 +8,14 @@ package com.sg.creativity.suite.dao;
 import com.sg.creativity.suite.dto.Concept;
 import com.sg.creativity.suite.dto.Idea;
 import com.sg.creativity.suite.dto.Idea_Concept;
-import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class Idea_ConceptDaoTest {
     @Inject 
     private Idea_ConceptDao icDao;
     
-    private CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    private DaoTestHelper helper = new DaoTestHelper();
     
     public Idea_ConceptDaoTest() {
     }
@@ -71,135 +70,83 @@ public class Idea_ConceptDaoTest {
     @Test
     @Transactional
     public void testInsertIdea_Concept() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        Concept concept = objMaker.makeConceptAndSetFields();
-        
-        ideaDao.insertIdea(idea);
-        conceptDao.insertConcept(concept);
-        Idea_Concept ic = new Idea_Concept();
-        ic.setIdea(idea);
-        ic.setConcept(concept);
-        
-        icDao.insertIdea_Concept(ic);
-        Idea_Concept icFromDao = icDao.getIdea_ConceptById(ic.getId());
-        
-        assertNotNull(ic.getId());
-        assertEquals(idea.getId(), ic.getIdea().getId());
-        assertEquals(concept.getId(), ic.getConcept().getId());
-        
-        
-    
+        helper.insertAnIdea_Concept();
     }
 
     /**
      * Test of getIdea_ConceptById method, of class Idea_ConceptDao.
      */
     @Test
+    @Transactional
     public void testGetIdea_ConceptById() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        Concept concept = objMaker.makeConceptAndSetFields();
-        
-        ideaDao.insertIdea(idea);
-        conceptDao.insertConcept(concept);
-        Idea_Concept ic = new Idea_Concept();
-        ic.setIdea(idea);
-        ic.setConcept(concept);
-        
-        icDao.insertIdea_Concept(ic);
-        Idea_Concept icFromDao = icDao.getIdea_ConceptById(ic.getId());
+        helper.insertAnIdea_Concept();
+        Idea_Concept ic = icDao.getIdea_ConceptById(1);
         
         assertNotNull(ic.getId());
-        assertEquals(idea.getId(), ic.getIdea().getId());
-        assertEquals(concept.getId(), ic.getConcept().getId());
-    
+        assertEquals(1, ic.getIdea().getId());
+        assertEquals(1, ic.getConcept().getId());
     }
 
+      //TODO: change to IdNotFoundException after discovering proper exception and making new exception class
+    @Test(expected=Exception.class)
+    public void testGetIdea_ConceptByNonExistentId() {
+        icDao.getIdea_ConceptById(22);
+    }
+    
     /**
      * Test of getAllIdea_Concepts method, of class Idea_ConceptDao.
      */
+    
     @Test
-    public void testGetAllIdea_Concepts() {
+    public void testGetAllIdea_ConceptsWhenNoIdea_ConceptsInDB() {
         int icCountBeforeInsertions = icDao.getAllIdea_Concepts().size();
         assertNotNull(icCountBeforeInsertions);
-        
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        Concept concept = objMaker.makeConceptAndSetFields();
-        
-        ideaDao.insertIdea(idea);
-        conceptDao.insertConcept(concept);
-        Idea_Concept ic = new Idea_Concept();
-        ic.setIdea(idea);
-        ic.setConcept(concept);
-        
-        icDao.insertIdea_Concept(ic);
-        Idea_Concept icFromDao = icDao.getIdea_ConceptById(ic.getId());
+        assertEquals(0, icCountBeforeInsertions);
+    }
+    
+    @Test
+    @Transactional
+    public void testGetAllIdea_Concepts() {
+        helper.insertAnIdea_Concept();
+        helper.insertAnIdea_Concept();
         
         List<Idea_Concept> allIdea_Concepts = icDao.getAllIdea_Concepts();
-        assertTrue(icCountBeforeInsertions+1 == allIdea_Concepts.size());
-        
-        assertNotNull(ic.getId());
-        assertEquals(idea.getId(), ic.getIdea().getId());
-        assertEquals(concept.getId(), ic.getConcept().getId());
+        assertEquals(2, allIdea_Concepts.size());
+        assertEquals(1, allIdea_Concepts.get(0).getId());
+        assertEquals(2, allIdea_Concepts.get(1).getId());
     }
 
     /**
      * Test of removeIdea_Concept method, of class Idea_ConceptDao.
      */
     @Test
+    @Transactional
     public void testRemoveIdea_Concept() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        Concept concept = objMaker.makeConceptAndSetFields();
-        
-        ideaDao.insertIdea(idea);
-        conceptDao.insertConcept(concept);
-        Idea_Concept ic = new Idea_Concept();
-        ic.setIdea(idea);
-        ic.setConcept(concept);
-        
-        icDao.insertIdea_Concept(ic);
-        Idea_Concept icFromDao = icDao.getIdea_ConceptById(ic.getId());
-        
-        icDao.removeIdea_Concept(icFromDao);
-        assertNull(icDao.getIdea_ConceptById(icFromDao.getId()));
+        Idea_Concept ic = helper.insertAnIdea_Concept();
+        icDao.removeIdea_Concept(ic);
+        assertNull(icDao.getIdea_ConceptById(ic.getId()));
     }
     
     /**
      * Test of getIdea_ConceptsByIdea method, of class Idea_ConceptDao.
      */
     @Test
+    @Transactional
     public void testGetIdea_ConceptsByIdea() {
-        Idea idea = objMaker.makeIdeaAndSetFields();
-        Concept concept1 = objMaker.makeConceptAndSetFields();
-        Concept concept2 = objMaker.makeConceptAndSetFields("abc", "xyz");
-        
-        ideaDao.insertIdea(idea);
-        conceptDao.insertConcept(concept1);
-        conceptDao.insertConcept(concept2);
-        
-        Idea_Concept ic1 = new Idea_Concept();
-        Idea_Concept ic2 = new Idea_Concept();
-        
-        ic1.setIdea(idea);
-        ic1.setConcept(concept1);
-        
-        ic2.setIdea(idea);
-        ic2.setConcept(concept2);
-        
-        icDao.insertIdea_Concept(ic1);
-        icDao.insertIdea_Concept(ic2);
-        
+        Idea idea = helper.insertTwoIdea_ConceptsSharingSameIdea();
+        Idea_Concept unrelatedIp = helper.insertAnIdea_Concept();
         List<Idea_Concept> icList = icDao.getIdea_ConceptsByIdea(idea);
-        Idea_Concept ic1FromDao = icList.get(icList.size()-2);
-        Idea_Concept ic2FromDao = icList.get(icList.size()-1);
         
-        assertEquals(ic1.getId(), ic1FromDao.getId());
-        assertEquals(ic2.getId(), ic2FromDao.getId());
+        assertEquals(2, icList.size());
+        assertFalse(icList.contains(unrelatedIp));
         
-        assertEquals(idea.getId(), ic1FromDao.getIdea().getId());
-        assertEquals(idea.getId(), ic2FromDao.getIdea().getId());
+        Idea_Concept ic1 = icList.get(0);
+        assertEquals(1, ic1.getId());
+        assertEquals(1, ic1.getIdea().getId());
         
-        assertEquals(concept1.getId(), ic1FromDao.getConcept().getId());
-        assertEquals(concept2.getId(), ic2FromDao.getConcept().getId());
+        Idea_Concept ic2 = icList.get(1);
+        assertEquals(2, ic2.getId());
+        assertEquals(1, ic2.getIdea().getId());
         
     }
 
@@ -207,38 +154,21 @@ public class Idea_ConceptDaoTest {
      * Test of getIdea_ConceptsByConcept method, of class Idea_ConceptDao.
      */
     @Test
+    @Transactional
     public void testGetIdea_ConceptsByConcept() {
-        Concept concept = objMaker.makeConceptAndSetFields();
-        Idea idea1 = objMaker.makeIdeaAndSetFields();
-        Idea idea2 = objMaker.makeIdeaAndSetFields();
-        
-        conceptDao.insertConcept(concept);
-        ideaDao.insertIdea(idea1);
-        ideaDao.insertIdea(idea2);
-        
-        Idea_Concept ic1 = new Idea_Concept();
-        Idea_Concept ic2 = new Idea_Concept();
-        
-        ic1.setConcept(concept);
-        ic1.setIdea(idea1);
-        
-        ic2.setConcept(concept);
-        ic2.setIdea(idea2);
-        
-        icDao.insertIdea_Concept(ic1);
-        icDao.insertIdea_Concept(ic2);
-        
+        Concept concept = helper.insertTwoIdea_ConceptsSharingSameConcept();
+        Idea_Concept unrelatedIp = helper.insertAnIdea_Concept();
         List<Idea_Concept> icList = icDao.getIdea_ConceptsByConcept(concept);
-        Idea_Concept ic1FromDao = icList.get(icList.size()-2);
-        Idea_Concept ic2FromDao = icList.get(icList.size()-1);
         
-        assertEquals(ic1.getId(), ic1FromDao.getId());
-        assertEquals(ic2.getId(), ic2FromDao.getId());
+        assertEquals(2, icList.size());
+        assertFalse(icList.contains(unrelatedIp));
         
-        assertEquals(concept.getId(), ic1FromDao.getConcept().getId());
-        assertEquals(concept.getId(), ic2FromDao.getConcept().getId());
+        Idea_Concept ic1 = icList.get(0);
+        assertEquals(1, ic1.getId());
+        assertEquals(1, ic1.getConcept().getId());
         
-        assertEquals(idea1.getId(), ic1FromDao.getIdea().getId());
-        assertEquals(idea2.getId(), ic2FromDao.getIdea().getId());
+        Idea_Concept ic2 = icList.get(1);
+        assertEquals(2, ic2.getId());
+        assertEquals(1, ic2.getConcept().getId());
     }
 }

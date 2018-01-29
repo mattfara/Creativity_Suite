@@ -29,30 +29,33 @@
     
     <bean id = "transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
-       
     </bean>
     
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
     
-    <bean id="ideaDaoImpl"
+    <bean id="ideaDao"
           class="com.sg.creativity.suite.dao.IdeaDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
-    <bean id="conceptDaoImpl"
+    
+    <bean id="conceptDao"
           class="com.sg.creativity.suite.dao.ConceptDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
-    <bean id="valueDaoImpl"
+    
+    <bean id="valueDao"
           class="com.sg.creativity.suite.dao.ValueDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
-    <bean id="problemDaoImpl"
+    
+    <bean id="problemDao"
           class="com.sg.creativity.suite.dao.ProblemDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
-    <bean id="sessionDaoImpl"
+    
+    <bean id="sessionDao"
           class="com.sg.creativity.suite.dao.SessionDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>    
     </bean>
@@ -61,7 +64,23 @@
           class="com.sg.creativity.suite.dao.Idea_ConceptDaoImpl">
           <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
+
+    <bean id="idea_ProblemDaoImpl"
+          class="com.sg.creativity.suite.dao.Idea_ProblemDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id = "daoTestHelper" class="com.sg.creativity.suite.dao.DaoTestHelper"/>
+
+    <bean id="idea_ValueDao"
+          class="com.sg.creativity.suite.dao.Idea_ValueDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
     
+    <bean id="session_ProblemDao"
+          class="com.sg.creativity.suite.dao.Session_ProblemDaoImpl">
+          <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
     
     <!-- leave at bottom -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>

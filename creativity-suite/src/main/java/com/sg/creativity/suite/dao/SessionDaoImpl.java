@@ -28,7 +28,7 @@ public class SessionDaoImpl implements SessionDao {
             = "SELECT * FROM Sessions WHERE id = ?";
 
     private final String SQL_GET_ALL_SESSIONS
-            = "SELECT * FROM Sessions";
+            = "SELECT * FROM Sessions ORDER BY id LIMIT ?, ?";
 
     private final String SQL_REMOVE_SESSION
             = "DELETE FROM Sessions WHERE id = ?";

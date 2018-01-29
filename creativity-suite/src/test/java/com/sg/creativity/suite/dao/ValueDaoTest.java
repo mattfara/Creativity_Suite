@@ -6,7 +6,6 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Value;
-import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -35,7 +34,7 @@ public class ValueDaoTest {
     @Inject
     private ValueDao dao;
 
-    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    DaoTestHelper helper = new DaoTestHelper();
     
     public ValueDaoTest() {
     }
@@ -66,7 +65,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testInsertValue() {
-        Value value = objMaker.makeValueAndSetFields();
+        Value value = helper.makeValueAndSetFields();
         //add
         dao.insertValue(value);
         //get
@@ -82,7 +81,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testGetValueById() {
-        Value value = objMaker.makeValueAndSetFields();
+        Value value = helper.makeValueAndSetFields();
         //add
         dao.insertValue(value);
         //get
@@ -99,8 +98,8 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testGetAllValues() {
-        Value value1 = objMaker.makeValueAndSetFields();
-        Value value2 = objMaker.makeValueAndSetFields("abc", null);
+        Value value1 = helper.makeValueAndSetFields();
+        Value value2 = helper.makeValueAndSetFields("abc", null);
         
         dao.insertValue(value1);
         dao.insertValue(value2);
@@ -127,7 +126,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testRemoveValue() {
-        Value value = objMaker.makeValueAndSetFields();
+        Value value = helper.makeValueAndSetFields();
         //add
         dao.insertValue(value);
         //get
@@ -145,7 +144,7 @@ public class ValueDaoTest {
     @Test
     @Transactional
     public void testUpdateValue() {
-        Value value = objMaker.makeValueAndSetFields();
+        Value value = helper.makeValueAndSetFields();
         dao.insertValue(value);
         Value valueFromDao = dao.getValueById(value.getId());
         String newName = "abc";

@@ -30,7 +30,7 @@ public class ConceptDaoImpl implements ConceptDao {
             = "SELECT * FROM Concepts WHERE id = ?";
 
     private final String SQL_GET_ALL_CONCEPTS
-            = "SELECT * FROM Concepts";
+            = "SELECT * FROM Concepts ORDER BY id LIMIT ?, ?";
 
     private final String SQL_REMOVE_CONCEPT
             = "DELETE FROM Concepts WHERE id = ?";

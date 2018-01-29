@@ -6,7 +6,6 @@
 package com.sg.creativity.suite.dao;
 
 import com.sg.creativity.suite.dto.Concept;
-import com.sg.creativity.suite.helpers.CreativeObjectMaker;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.After;
@@ -36,7 +35,7 @@ public class ConceptDaoTest {
     @Inject
     private ConceptDao dao;
     
-    CreativeObjectMaker objMaker = new CreativeObjectMaker();
+    DaoTestHelper helper = new DaoTestHelper();
     
     public ConceptDaoTest() {
     }
@@ -62,28 +61,19 @@ public class ConceptDaoTest {
      */
     
     @Test
-    @Transactional
     public void testInsertConcept() {
-        Concept concept = objMaker.makeConceptAndSetFields();
-        dao.insertConcept(concept);
-        Concept fromDao = dao.getConceptById(concept.getId());
-        assertEquals("putting a hole in something", fromDao.getName());
-        assertEquals("taking an object or concept and putting a literal"
-                + "or metaphorical hole in it", fromDao.getDescription());
+        helper.insertAConcept();
     }
 
     /**
      * Test of getConceptById method, of class ConceptDao.
      */
     @Test
-    @Transactional
     public void testGetConceptById() {
-        Concept concept = objMaker.makeConceptAndSetFields();
-        dao.insertConcept(concept);
-        Concept fromDao = dao.getConceptById(concept.getId());
-        assertEquals("putting a hole in something", fromDao.getName());
+        Concept concept = helper.insertAConcept();
+        assertEquals("putting a hole in something", concept.getName());
         assertEquals("taking an object or concept and putting a literal"
-                + "or metaphorical hole in it", fromDao.getDescription());
+                + "or metaphorical hole in it", concept.getDescription());
     }
 
     /**
@@ -92,8 +82,8 @@ public class ConceptDaoTest {
     @Test
     @Transactional
     public void testGetAllConcepts() {
-        Concept concept1 = objMaker.makeConceptAndSetFields();
-        Concept concept2 = objMaker.makeConceptAndSetFields("abc", null);
+        Concept concept1 = helper.makeConceptAndSetFields();
+        Concept concept2 = helper.makeConceptAndSetFields("abc", null);
         
         dao.insertConcept(concept1);
         dao.insertConcept(concept2);
@@ -119,7 +109,7 @@ public class ConceptDaoTest {
     @Test
     @Transactional
     public void testRemoveConcept() {
-        Concept concept = objMaker.makeConceptAndSetFields();
+        Concept concept = helper.makeConceptAndSetFields();
         //add
         dao.insertConcept(concept);
         //get
@@ -137,7 +127,7 @@ public class ConceptDaoTest {
     @Test
     @Transactional
     public void testUpdateConcept() {
-        Concept concept = objMaker.makeConceptAndSetFields();
+        Concept concept = helper.makeConceptAndSetFields();
         dao.insertConcept(concept);
         Concept conceptFromDao = dao.getConceptById(concept.getId());
         String newName = "abc";
